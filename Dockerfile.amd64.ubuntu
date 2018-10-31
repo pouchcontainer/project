@@ -1,0 +1,51 @@
+FROM ubuntu:16.04
+
+RUN apt-get update \
+  && apt-get install -y \
+    apt-utils \
+    gnupg-agent \
+    wget \
+    curl \
+    vim \
+    apparmor \
+    libapparmor-dev \
+    libdevmapper-dev \
+    libseccomp-dev \
+    bash-completion \
+    build-essential \
+    cmake \
+    ca-certificates \
+    debhelper \
+    dh-apparmor \
+    dh-systemd \
+    libsystemd-dev \
+    git \
+    libltdl-dev \
+    pkg-config \
+    --no-install-recommends \
+    && apt-get clean
+
+# install golang
+ENV go_version=1.10.4
+ENV arch=amd64
+
+RUN wget --quiet https://storage.googleapis.com/golang/go${go_version}.linux-${arch}.tar.gz \
+  && tar -C /usr/local -xzf go${go_version}.linux-${arch}.tar.gz \
+  && rm go${go_version}.linux-${arch}.tar.gz \
+  && cp /usr/local/go/bin/* /usr/local/bin/
+
+WORKDIR /build
+
+# keys stores the gpg keys
+VOLUME /build/keys
+
+# deb package will be released at the folder.
+VOLUME /build/bundles
+
+# copy debian control data and related scripts
+COPY debspec /build/
+COPY scripts/* /build/scripts/
+
+# CMD is like git-commit, deb-version
+CMD ["master", "1.0.0~unstable"]
+ENTRYPOINT ["bash", "-x", "/build/build.sh"]
