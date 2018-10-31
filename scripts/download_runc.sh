@@ -19,7 +19,7 @@ main() {
 
   wget --quiet "${url}" -P "${tmpdir}"
   chmod +x "${tmpdir}/${target}"
-  cp -f "${tmpdir}/${target}" "${dist}/"
+  cp -f "${tmpdir}/${target}" "${dist}/runc"
 }
 
 main "$@"
