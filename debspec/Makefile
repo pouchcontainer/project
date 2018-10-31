@@ -28,10 +28,10 @@ install: install_pouch \
 install_pouch:
 	mkdir -p "${DESTDIR}/usr/local/bin"; \
 	echo source code; \
-	git clone "https://${PKG_NAME}" \
-		--depth 1 -b "${POUCH_COMMIT}" "${GOPATH}/src/${PKG_NAME}"; \
+	git clone "https://${PKG_NAME}" "${GOPATH}/src/${PKG_NAME}"; \
 	echo build pouch/pouchd and install; \
 	cd "${GOPATH}/src/${PKG_NAME}"; \
+	git checkout ${POUCH_COMMIT} ; \
 	make && PREFIX=${DESTDIR}/usr/local/ make install
 
 .PHONY: install_containerd
