@@ -30,7 +30,7 @@ The layout of folder is like:
 
 ```
 keys:
-  |- default_key
+  |_ default_key
   |_ public
   |_ private
 ```
@@ -45,6 +45,31 @@ x.y.z~rc{digit}
 ```
 
 Therefore, we can make sure that the policy works right for selecting new version.
+
+### How to build rpm package
+
+The usage is the same to deb package.
+
+```
+cd ${this-repo}
+
+docker build -f Dockerfile.amd64.centos . -t build-rpm-pkg
+
+docker run -it \ # needs input for password
+  -v gpg_keys_dir:/build/keys \ # gpg_keys_dir contains gpg keys.
+  -v bundle_dir:/build/bundles \ # bundle_dir contains release files.
+  build-rpm-pkg ${pouch-commit-id-or-branch-or-tag} ${version} ${release}
+
+# release will like 1.el.centos.
+```
+
+> NOTE: The gpg_keys_dir doesn't need the default_key file.
+
+In PouchContainer, the ${pkg-version-name} of pkg must be like the format:
+
+```
+x.y.z~rc{digit}
+```
 
 ## Common scripts
 

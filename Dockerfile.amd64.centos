@@ -1,0 +1,50 @@
+FROM centos:7.2.1511
+
+# install required dependencies
+RUN yum update -y \
+  && yum install -y \
+  wget \
+  git \
+  gcc \
+  ruby-devel \
+  fuse \
+  fuse-devel \
+  pam-devel \
+  automake \
+  autoconf \
+  libtool \
+  make \
+  rpm-build \
+  rpm-sign \
+  rubygems \
+  vim \
+  tree \
+  && yum clean all
+
+# install fpm to build rpm package
+RUN gem install --no-ri --no-rdoc fpm
+
+# install golang
+ENV go_version=1.10.4
+ENV arch=amd64
+
+RUN wget --quiet https://storage.googleapis.com/golang/go${go_version}.linux-${arch}.tar.gz \
+  && tar -C /usr/local -xzf go${go_version}.linux-${arch}.tar.gz \
+  && rm go${go_version}.linux-${arch}.tar.gz \
+  && cp /usr/local/go/bin/* /usr/local/bin/
+
+WORKDIR /build
+
+# keys stores the gpg keys
+VOLUME /build/keys
+
+# deb package will be released at the folder.
+VOLUME /build/bundles
+
+# copy debian control data and related scripts
+COPY rpmspec /build/
+COPY scripts/* /build/scripts/
+
+# CMD is like git-commit, rpm-version, rpm-release
+CMD ["master", "1.0.0~unstable", "1.el7.centos"]
+ENTRYPOINT ["bash", "-x", "/build/build.sh"]
