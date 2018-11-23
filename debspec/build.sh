@@ -13,7 +13,7 @@ add_changelog() {
   deb_version=$2
   deb_date="$(date --rfc-2822)"
   cat > ${1}/debian/changelog <<EOF
-pouch (${deb_version}+ubuntu) grape; urgency=low
+pouch (${deb_version}-0ubuntu16) grape; urgency=low
 
   * Version: ${deb_version}
 
@@ -49,7 +49,7 @@ main() {
 
   pouch_commit=$1
   deb_version=$2
-  pkg_name="pouch_${2}+ubuntu_amd64.deb"
+  pkg_name="pouch_${2}-0ubuntu16_amd64.deb"
 
   # add changelog
   add_changelog "${specdir}" "${deb_version}"
@@ -58,7 +58,7 @@ main() {
   POUCH_COMMIT=${pouch_commit} dpkg-buildpackage -uc -us
 
   # copy files into bundle
-  bundle_dir="${specdir}/bundles/${2}+ubuntu_amd64/"
+  bundle_dir="${specdir}/bundles/${2}-0ubuntu16_amd64/"
   rm -rf ${bundle_dir} && mkdir -p ${bundle_dir}
   cp ${specdir}/../pouch_* ${bundle_dir}
   generate_release "${specdir}/keys" "${bundle_dir}/"
