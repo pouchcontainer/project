@@ -35,7 +35,7 @@ install_pouch() {
   git checkout "${commit_id}"
 
   # build binary
-  make
+  make BUILDTAGS='seccomp'
 
   # install binary into dist_dir
   PREFIX="${dist_dir}/usr/local/" make install

@@ -10,6 +10,9 @@ GOPATH := $(shell go env GOPATH)
 # PKG_NAME is the name of go package of pouch.
 PKG_NAME := github.com/alibaba/pouch
 
+# pouch build with seccomp
+BUILDTAGS ?= seccomp
+
 .PHONY: build
 build:
 	@echo build pouch will be done in install recipe.
@@ -32,7 +35,7 @@ install_pouch:
 	echo build pouch/pouchd and install; \
 	cd "${GOPATH}/src/${PKG_NAME}"; \
 	git checkout ${POUCH_COMMIT} ; \
-	make && PREFIX=${DESTDIR}/usr/local/ make install
+	make BUILDTAGS=${BUILDTAGS} && PREFIX=${DESTDIR}/usr/local/ make install
 
 .PHONY: install_containerd
 install_containerd:
