@@ -2,24 +2,21 @@
 
 set -euo pipefail
 
-readonly CONTAINERD_VERSION="1.0.3"
+readonly CONTAINERD_VERSION="v1.2.5"
 
 # main downloads containerd binary into specific dir.
 main() {
-  local url target tmpdir dist
+  local dist gopath
 
   dist="${1}"
+  gopath="$(go env GOPATH)/src/github.com/containerd/containerd"
 
-  target="containerd-${CONTAINERD_VERSION}.linux-amd64.tar.gz"
-  url="https://github.com/containerd/containerd/releases/download"
-  url="${url}/v${CONTAINERD_VERSION}/${target}"
+  git clone --branch "$CONTAINERD_VERSION" --depth 1 \
+    https://github.com/containerd/containerd.git "${gopath}"
 
-  tmpdir="$(mktemp -d /tmp/containerd-download-XXXXXX)"
-  trap 'rm -rf /tmp/containerd-download-*' EXIT
-
-  wget --quiet "${url}" -P "${tmpdir}"
-  tar xf "${tmpdir}/${target}" -C "${tmpdir}"
-  cp -f "${tmpdir}"/bin/* "${dist}/"
+  cd "$gopath"
+  make BUILDTAGS='no_cri no_btrfs'
+  cp -f bin/* "${dist}/"
 }
 
 main "$@"

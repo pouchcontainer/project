@@ -18,6 +18,7 @@ RUN yum update -y \
   rpm-sign \
   rubygems \
   libseccomp \
+  libseccomp-devel \
   vim \
   tree \
   && yum clean all

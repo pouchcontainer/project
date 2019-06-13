@@ -2,14 +2,14 @@
 
 set -euo pipefail
 
-readonly RUNC_VERSION="6a93df143f66a1c8bc967200473a568a8487d287"
+readonly RUNC_VERSION="52288e785fdf58c85a7a194c4061848d0fff3f78"
 
 # main downloads runc binary into specific dir.
 main() {
   local gopath dist
 
   dist="${1}"
-  gopath="${GOPATH}/src/github.com/opencontainers/runc"
+  gopath="$(go env GOPATH)/src/github.com/opencontainers/runc"
 
   git clone https://github.com/alibaba/runc.git "${gopath}"
   cd "${gopath}"
